@@ -1,4 +1,6 @@
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 const availableCubes = {
   red: 12,
@@ -6,9 +8,12 @@ const availableCubes = {
   blue: 14
 };
 
-const lines = fs.readFileSync('./data.txt', "utf-8").trim().split("\n");
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const dataPath = path.join(__dirname, 'data.txt')
+const lines = fs.readFileSync(dataPath, "utf-8").trim().split("\n");
 
-function parseLine(line) {
+export function parseLine(line) {
   const draws = line.split(': ')[1].split('; ');
   
   return draws.map(draw => {
@@ -23,9 +28,8 @@ function parseLine(line) {
   });
 }
 
-function isGamePossible(draws, available) {
+export function isGamePossible(draws, available) {
   const cubes = { ...available };
-  console.log(draws);
   for (const draw of draws) {
     for (const color in draw) {
       if (draw[color] > cubes[color]) {
@@ -37,9 +41,12 @@ function isGamePossible(draws, available) {
 
   return true;
 }
-
+let totalSumOfGamesPossibleId = 0
 lines.forEach((line, index) => {
   const draws = parseLine(line);
   const possible = isGamePossible(draws, availableCubes);
+  if(possible) totalSumOfGamesPossibleId++
   console.log(`Game ${index + 1} is ${possible ? 'possible' : 'not possible'}`);
 });
+
+console.log(totalSumOfGamesPossibleId);

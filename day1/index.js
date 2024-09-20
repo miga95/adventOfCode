@@ -1,4 +1,6 @@
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 export function processFile(filename) {
   return new Promise((resolve, reject) => {
@@ -38,13 +40,13 @@ export function processFile(filename) {
         totalSum += number;
       });
 
-      console.log(totalSum);
       resolve(totalSum);
     });
   });
 }
-
-
-// const result = await processFile('data.txt'); 
-// console.log(`Le total calculé est: ${result}`);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dataPath = path.join(__dirname, 'data.txt');
+const result = await processFile(dataPath); 
+console.log(`Le total calculé est: ${result}`);
 
